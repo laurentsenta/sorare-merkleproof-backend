@@ -1,0 +1,16 @@
+/node_modules/
+build/
+token.json
+.env.mainnet*
+.env.prod*
+.env
+*.log
+/coverage/
+client_secret_*
+
+node_modules
+.env
+
+#Hardhat files
+cache
+artifacts
