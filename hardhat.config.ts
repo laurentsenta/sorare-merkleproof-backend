@@ -1,7 +1,8 @@
-import { task } from "hardhat/config";
-import "@nomiclabs/hardhat-waffle";
 import "@nomiclabs/hardhat-ethers";
-import { HardhatUserConfig } from "hardhat/config";
+import "@nomiclabs/hardhat-waffle";
+import '@typechain/hardhat';
+import 'hardhat-deploy';
+import { HardhatUserConfig, task } from "hardhat/config";
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -24,6 +25,14 @@ const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {
+      live: false,
+      saveDeployments: true,
+      tags: ["local", "test"]
+    },
+    localhost: {
+      live: false,
+      saveDeployments: true,
+      tags: ["local"]
     },
     // rinkeby: {
     //   // url: "https://eth-mainnet.alchemyapi.io/v2/123abc123abc123abc123abc123abcde",
@@ -36,6 +45,14 @@ const config: HardhatUserConfig = {
     cache: "./cache",
     artifacts: "./artifacts"
   },
+  namedAccounts: {
+    deployer: {
+      default: 0,
+    },
+    someUser: {
+      default: 9
+    }
+  }
 };
 
 export default config;

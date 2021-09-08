@@ -20,16 +20,21 @@
     "noImplicitAny": true,
     "noImplicitThis": true,
     "strictNullChecks": true,
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "paths": {
       "@gazebo/*": [
-        "gazebo/*"
+        "./src/gazebo/*"
+      ],
+      "@typechain": [
+        "./typechain/*"
       ]
     }
   },
   "include": [
-    "src/**/*",
-    "tests/**/*",
-    "scripts/**/*",
+    "./src/**/*",
+    "./tests/**/*",
+    "./scripts/**/*",
+    "./hardhat.config.ts",
+    "./deploy/**/*"
   ]
 }

@@ -1,7 +1,32 @@
 import { expect } from "chai";
-import { ethers } from "hardhat";
+import { ethers, deployments, getNamedAccounts } from "hardhat";
+import { Timestamper } from '../typechain'
 
 describe("Timestamper", function () {
+  it("Should let me timestamp a hash (using hardhat deploy)", async function () {
+    await deployments.fixture(['Timestamper'])
+    const contract = <Timestamper>await ethers.getContract('Timestamper')
+
+    const { deployer } = await getNamedAccounts();
+
+    const now = (new Date()).getTime()
+
+    await expect(contract.timestamp(now, { from: deployer }))
+      .to.emit(contract, 'Timestamp').withArgs(now)
+  });
+
+  it("Should not let anyone timestamp a hash (using hardhat deploy)", async function () {
+    await deployments.fixture(['Timestamper'])
+    const contract = <Timestamper>await ethers.getContract('Timestamper')
+
+    const { someUser } = await ethers.getNamedSigners()
+
+    const now = (new Date()).getTime()
+
+    await expect(contract.connect(someUser).timestamp(now))
+      .to.be.reverted;
+  });
+
   it("Should let me timestamp a hash", async function () {
     const Timestamper = await ethers.getContractFactory("Timestamper");
     const contract = await Timestamper.deploy();
