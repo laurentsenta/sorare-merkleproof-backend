@@ -13,3 +13,10 @@ compile:
 
 test:
 	npx hardhat test --network localhost
+
+demo-timestamp:
+	npx hardhat timestamp --network localhost --hash 42
+
+demo-verify:
+	npx hardhat timestamp --network localhost --hash 42 --verify true
+
