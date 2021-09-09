@@ -1,16 +1,17 @@
 import * as dotenv from "dotenv";
-
 dotenv.config();
 
-import { makeApp, Server } from "./api";
-import { MongoDBStorage } from "./data";
+import { makeApp } from "./api";
+import './sentry';
+
+const PORT = process.env.PORT || '3000';
 
 // const args = process.argv.slice(2);
 // const [cmd, ...rest] = args;
 
 (async () => {
-  const storage = await MongoDBStorage.load()
-  const app = makeApp(storage);
-  const server = new Server(app);
-  await server.start();
+  const app = makeApp();
+  app.listen(PORT, () => {
+    console.log("Express Listening at http://localhost:" + PORT);
+  })
 })();
