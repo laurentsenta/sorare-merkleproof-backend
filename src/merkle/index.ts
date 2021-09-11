@@ -52,7 +52,6 @@ const computeNodeHash = async (a: string, b: string | undefined): Promise<string
     const hashed = left + ':' + (right || '')
     const d = await sha256(fromString(hashed))
     return toBase64String(d)
-
 }
 
 export const makeMerkleBinaryTree = async <T extends SupportedInput>(items: T[]): Promise<MerkleBinaryTree<T> | null> => {

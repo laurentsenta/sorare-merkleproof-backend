@@ -1,4 +1,5 @@
 TEST_FILE=./generated-test-data/0048-wendy-blanda.json
+NETWORK:="localhost"
 
 api:
 	yarn build &&
@@ -12,28 +13,34 @@ compile:
 	npx hardhat compile # --force
 
 test:
-	npx hardhat test --network localhost
+	npx hardhat test --network ${NETWORK}
+
+export-all:
+	npx hardhat deploy --export-all ./deploy.export.json 
+
+demo-node:
+	npx hardhat node
 
 demo-timestamp:
-	npx hardhat timestamp --network localhost --hash 42
+	npx hardhat timestamp --network ${NETWORK} --hash 42
 
 demo-verify:
-	npx hardhat timestamp --network localhost --hash 42 --verify true
+	npx hardhat timestamp --network ${NETWORK} --hash 42 --verify true
 
 demo-generate:
-	npx hardhat generate --network localhost --folder ./generated-test-data --count 100
+	npx hardhat generate --network ${NETWORK} --folder ./generated-test-data --count 100
 
 demo-merklehash:
-	npx hardhat merklehash --network localhost --folder ./generated-test-data --output-file generated-test-data.tree.json --on-chain true
+	npx hardhat merklehash --network ${NETWORK} --folder ./generated-test-data --output-file generated-test-data.tree.json --on-chain true
 
 demo-merkleproof:
-	npx hardhat merkleproof --network localhost --merkle-file ./generated-test-data.tree.json --file-name ${TEST_FILE} --output-file ./generated-test-data.proof.json
+	npx hardhat merkleproof --network ${NETWORK} --merkle-file ./generated-test-data.tree.json --file-name ${TEST_FILE} --output-file ./generated-test-data.proof.json
 
 demo-verifyproof:
 	cp ${TEST_FILE} /tmp/tested-file
-	npx hardhat verifyproof --network localhost --file-path /tmp/tested-file --proof-file ./generated-test-data.proof.json
+	npx hardhat verifyproof --network ${NETWORK} --file-path /tmp/tested-file --proof-file ./generated-test-data.proof.json
 
 demo-tampered-verifyproof:
 	cp ${TEST_FILE} /tmp/tested-file
 	echo tampered >> /tmp/tested-file
-	npx hardhat verifyproof --network localhost --file-path /tmp/tested-file --proof-file ./generated-test-data.proof.json
+	npx hardhat verifyproof --network ${NETWORK} --file-path /tmp/tested-file --proof-file ./generated-test-data.proof.json

@@ -10,6 +10,9 @@ import slugify from 'slugify';
 import { lpad } from "./src/gazebo/utils";
 import { makeMerkleBinaryTree, makeProof, MerkleBinaryTree, PahtInput, computeContentHash, traverseProof } from "./src/merkle";
 import { Timestamper } from './typechain';
+import { config as dotenvConfig } from "dotenv";
+
+dotenvConfig();
 
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   const accounts = await hre.ethers.getSigners();
@@ -188,9 +191,34 @@ task("verifyproof", "verify the merkleproof for a file on chain")
     }
   });
 
+
+// TODO: rethink using https://github.com/paulrberg/solidity-template/blob/main/hardhat.config.ts
+
+const ROPSTEN_API_URL = process.env.ROPSTEN_API_URL
+const ROPSTEN_MAIN_ACCOUNT = process.env.ROPSTEN_MAIN_ACCOUNT
+
+const chainIds = {
+  goerli: 5,
+  hardhat: 31337,
+  kovan: 42,
+  mainnet: 1,
+  rinkeby: 4,
+  ropsten: 3,
+};
+
 // Go to https://hardhat.org/config/ to learn more
 const config: HardhatUserConfig = {
-  solidity: "0.8.4",
+  solidity: {
+    version: "0.8.4",
+    settings: {
+      // Disable the optimizer when debugging
+      // https://hardhat.org/hardhat-network/#solidity-optimizer-support
+      optimizer: {
+        enabled: true,
+        runs: 800,
+      },
+    }
+  },
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {
@@ -203,10 +231,10 @@ const config: HardhatUserConfig = {
       saveDeployments: true,
       tags: ["local"]
     },
-    // rinkeby: {
-    //   // url: "https://eth-mainnet.alchemyapi.io/v2/123abc123abc123abc123abc123abcde",
-    //   // accounts: [privateKey1, privateKey2, ...]
-    // }
+    ropsten: {
+      url: ROPSTEN_API_URL,
+      accounts: [ROPSTEN_MAIN_ACCOUNT!]
+    }
   },
   paths: {
     sources: "./contracts",
