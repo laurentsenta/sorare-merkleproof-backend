@@ -2,6 +2,8 @@
 /generated-test-data
 /generated-test-data.tree.json
 /generated-test-data.proof.json
+/generated-test-ids*
+*wendy-blanda.json
 
 /node_modules/
 build/

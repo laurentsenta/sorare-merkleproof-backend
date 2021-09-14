@@ -50,6 +50,36 @@ task("generate", "Generate a bunch of random files")
     }
   });
 
+task("generate-ids", "Generate a bunch of random identities")
+  .addParam("folder", "The destination folder")
+  .addParam("count", "The number of files", 10, types.int)
+  .setAction(async (taskArgs, { ethers, deployments }) => {
+    const { folder, count } = taskArgs
+
+    faker.seed(folder + count)
+
+    if (existsSync(folder)) {
+      console.error(`folder ${folder} exists, leaving`)
+      process.exit(1)
+    }
+
+    mkdirSync(folder, { recursive: true })
+
+    for (let i = 0; i < count; i++) {
+      const id = lpad(i, ('' + count).length + 1)
+      const name = faker.name.findName()
+      const slug = slugify(name, { lower: true, strict: true })
+      const org = faker.company.companyName()
+      const hired = faker.date.recent()
+      const title = faker.name.jobTitle()
+      const item = {
+        i, id, name, slug,
+        org, hired, title
+      }
+      writeFileSync(`${folder}/${id}-${slug}.json`, JSON.stringify(item, undefined, 2))
+    }
+  });
+
 const hasTimestamp = async (contract: Timestamper, value: BigNumber): Promise<boolean> => {
   // TODO: double check the blockFrom this might get lost.
   const f = contract.filters.Timestamp(value)

@@ -59,12 +59,25 @@ export const makeMerkleBinaryTree = async <T extends SupportedInput>(items: T[])
         return null
     }
 
-    const leaves: MerkleBinaryLeaf<T>[] = await Promise.all(
-        items.map(async item => ({
+    // "correct" implementation
+    // const leaves: MerkleBinaryLeaf<T>[] = await Promise.all(
+    //     items.map(async item => ({
+    //         hash: await computeContentHash(item),
+    //         content: item
+    //     }))
+    // )
+
+    // "incorrect" implementation,
+    // this version will scale to hundred of thousands of items,
+    // it's very unefficient but you know what they say about early optimization.
+    const leaves: MerkleBinaryLeaf<T>[] = []
+    for (let i = 0; i < items.length; i++) {
+        const item = items[i]
+        leaves.push({
             hash: await computeContentHash(item),
             content: item
-        }))
-    )
+        })
+    }
 
     let currentLevel: MerkleItem<T>[] = leaves
 
