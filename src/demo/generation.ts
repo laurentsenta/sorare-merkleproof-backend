@@ -2,7 +2,7 @@ import { lpad } from "../gazebo/utils";
 import faker from 'faker';
 import { existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from "fs";
 import slugify from 'slugify';
-import { computeContentHash, makeMerkleBinaryTree, makeProof, MerkleBinaryTree, PahtInput, traverseProof } from "../merkle";
+import { computeContentHash, makeMerkleBinaryTree, makeProof, MerkleBinaryTree, PathInput, traverseProof } from "../merkle";
 
 export const generateRandomFiles = (folder: string, count: number) => {
     // @ts-ignore
@@ -71,7 +71,7 @@ export const generateMerkleProofForFile = (merkleFile: string, fileName: string)
         throw new Error(`file ${merkleFile} does not exists, leaving`)
     }
 
-    const tree: MerkleBinaryTree<PahtInput> = require(`../../${merkleFile}`)
+    const tree: MerkleBinaryTree<PathInput> = require(`../../${merkleFile}`)
 
     const searched = {
         path: fileName

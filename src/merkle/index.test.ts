@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { computeContentHash, findPath, makeMerkleBinaryTree, makeProof, verifyProof } from './'
+import { computeContentHash, findPath, makeMerkleBinaryTree, makeProof, verifyProof } from '.'
 
 describe('I can create a binary tree', () => {
     it('creates an empty tree', async () => {
