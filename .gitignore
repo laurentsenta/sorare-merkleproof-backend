@@ -1,4 +1,7 @@
 # demo
+/generated/*
+!/generated/.keep
+
 /generated-test-data
 /generated-test-data.tree.json
 /generated-test-data.proof.json

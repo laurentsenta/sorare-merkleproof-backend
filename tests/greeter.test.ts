@@ -8,7 +8,6 @@ describe("Greeter", function () {
     await greeter.deployed();
 
     expect(await greeter.greet()).to.equal("Hello, world!");
-
     const setGreetingTx = await greeter.setGreeting("Hola, mundo!");
 
     // wait until the transaction is mined

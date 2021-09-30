@@ -14,7 +14,7 @@ export const firstLine = (x: string): string => head(x.split('\n')) || '';
 
 export const withoutUndefined = (xs: any) => pickBy(xs, v => v !== undefined);
 
-export const noop = () => {};
+export const noop = () => { };
 
 const singletonerLog = logger('singletoner');
 
@@ -30,7 +30,7 @@ export function singletoner(
     throw new Error('Invalid Singletoned, get is undefined');
   }
 
-  propertyDescription.get = function(this: any): any {
+  propertyDescription.get = function (this: any): any {
     singletonerLog('getting the field:', target, propertyName);
 
     if (!this[internalName]) {

@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import { ethers, deployments, getNamedAccounts } from "hardhat";
-import { Timestamper } from '../typechain'
+import { deployments, ethers, getNamedAccounts } from "hardhat";
+import { Timestamper } from '../typechain';
 
 describe("Timestamper", function () {
   it("Should let me timestamp a hash (using hardhat deploy)", async function () {
@@ -9,7 +9,7 @@ describe("Timestamper", function () {
 
     const { deployer } = await getNamedAccounts();
 
-    const now = (new Date()).getTime()
+    const now = Date.now()
 
     await expect(contract.timestamp(now, { from: deployer }))
       .to.emit(contract, 'Timestamp').withArgs(now)

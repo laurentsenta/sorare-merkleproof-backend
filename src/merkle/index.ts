@@ -1,6 +1,6 @@
 import { promises } from 'fs'
 import { chunk, isEqual, reverse } from 'lodash'
-import { sha256, fromString, toBase64String } from './encoding'
+import { fromString, sha256, toBase64String } from './encoding'
 
 // For simplicity for now we only support a very reduced content set.
 export type PahtInput = { path: string }

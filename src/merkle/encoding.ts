@@ -1,4 +1,4 @@
-import crypto from 'crypto'
+import crypto from 'crypto';
 
 // source:
 // https://github.com/multiformats/js-multiformats/blob/master/src/hashes/sha2.js

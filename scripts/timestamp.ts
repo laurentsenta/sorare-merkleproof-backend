@@ -1,3 +1,7 @@
+/**
+ * Script demo,
+ * Keeping this nearby in case I need to add more.
+ */
 import { ethers } from "hardhat";
 
 async function main() {
