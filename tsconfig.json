@@ -38,6 +38,7 @@
   },
   "include": [
     "./src/**/*",
+    "./typechain/**/*",
     "./tests/**/*",
     "./scripts/**/*",
     "./hardhat.config.ts",

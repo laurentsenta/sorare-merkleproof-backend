@@ -5,7 +5,7 @@
  * we want to use this for now.
  */
 import { BigNumber } from "@ethersproject/bignumber";
-import { Timestamper } from '@merkle-typechain';
+import { Timestamper } from '../../typechain';
 
 type HardhatEthers = any // TODO: precise or get rid of it.
 
@@ -16,7 +16,7 @@ export const hasTimestamp = async (contract: Timestamper, value: BigNumber): Pro
     return qf.length > 0
 }
 
-export const verifyTimestamp = async (hash: string, ethers: HardhatEthers): Promise<boolean> => {
+export const verifyTimestamp = async (hash: string | Uint8Array, ethers: HardhatEthers): Promise<boolean> => {
     const contract = <Timestamper>await ethers.getContract('Timestamper')
     const value = ethers.BigNumber.from(hash)
     return await hasTimestamp(contract, value)

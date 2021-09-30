@@ -1,15 +1,22 @@
-# Basic Sample Hardhat Project
+# Merkle Proof: Backend
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+`make compile` to compile solidity & generate typescripts interfaces.
 
-Try running some of the following tasks:
+`make node` to start a localhost node.
 
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
+Consult the `Makefile` for the whole demo: it generates data, timestamp, then lets you verify it.
+
+
+## Know issues:
+
+If you try to import: `import "tsconfig-paths/register";` in hardhat,
+the hardhat command will fail with:
+
 ```
+An unexpected error occurred:
+TypeError: typechain_1.glob is not a function
+```
+
+All imports are relative for now.
+
+- [ ] TODO: figure out a solution or raise the problem so we can use aliases.

@@ -1,5 +1,5 @@
-TEST_FILE=./generated/test-data/0048-wendy-blanda.json
-TEST_FILE_IDS=./generated/test-ids/0309210-andrew-oreilly.json
+TEST_FILE=./generated/test-data/0085-carlton-walter.json
+TEST_FILE_IDS=./generated/test-ids/03974-malcolm-schumm-phd.json
 NETWORK:="localhost"
 
 compile:
@@ -11,7 +11,7 @@ test:
 export-all:
 	npx hardhat deploy --export-all ./deploy.export.json 
 
-demo-node:
+node:
 	npx hardhat node
 
 demo-timestamp:
@@ -24,7 +24,7 @@ demo-generate:
 	npx hardhat generate --network ${NETWORK} --folder ./generated/test-data --count 100
 
 demo-generate-ids:
-	npx hardhat generate-ids --network ${NETWORK} --folder ./generated/test-ids --count 500000
+	npx hardhat generate-ids --network ${NETWORK} --folder ./generated/test-ids --count 5000
 
 demo-merklehash:
 	npx hardhat merklehash --network ${NETWORK} --folder ./generated/test-data --output-file generated/test-data.tree.json --on-chain true

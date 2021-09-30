@@ -1,9 +1,8 @@
-import { lpad } from "@gazebo/utils";
+import { lpad } from "../gazebo/utils";
 import faker from 'faker';
 import { existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from "fs";
-import 'hardhat-deploy';
 import slugify from 'slugify';
-import { computeContentHash, makeMerkleBinaryTree, makeProof, MerkleBinaryTree, PahtInput, traverseProof } from "src/merkle";
+import { computeContentHash, makeMerkleBinaryTree, makeProof, MerkleBinaryTree, PahtInput, traverseProof } from "../merkle";
 
 export const generateRandomFiles = (folder: string, count: number) => {
     // @ts-ignore
@@ -72,7 +71,7 @@ export const generateMerkleProofForFile = (merkleFile: string, fileName: string)
         throw new Error(`file ${merkleFile} does not exists, leaving`)
     }
 
-    const tree: MerkleBinaryTree<PahtInput> = require(merkleFile)
+    const tree: MerkleBinaryTree<PahtInput> = require(`../../${merkleFile}`)
 
     const searched = {
         path: fileName
@@ -96,7 +95,7 @@ export const traverseProofFile = async (proofFile: string, filePath: string): Pr
         throw new Error(`file ${proofFile} does not exists, leaving`)
     }
 
-    const proof = require(proofFile)
+    const proof = require(`../../${proofFile}`)
     const fileHash = await computeContentHash({ path: filePath })
     const resultingHash = await traverseProof(proof, fileHash)
 

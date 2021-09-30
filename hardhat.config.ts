@@ -1,15 +1,14 @@
 // Import prefix: setup important modules first
 import { config as dotenvConfig } from "dotenv";
 dotenvConfig();
-import "tsconfig-paths/register";
 // Regular imports
-import { doTimestamp, generateMerkleProofForFile, generateMerkleTreeFromFolder, generateRandomFiles, generateRandomIDs, traverseProofFile, verifyTimestamp } from "@demo";
+import { HardhatUserConfig, task, types } from "hardhat/config";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-waffle";
 import '@typechain/hardhat';
-import { writeFileSync } from "fs";
 import 'hardhat-deploy';
-import { HardhatUserConfig, task, types } from "hardhat/config";
+import { writeFileSync } from "fs";
+import { doTimestamp, generateMerkleProofForFile, generateMerkleTreeFromFolder, generateRandomFiles, generateRandomIDs, traverseProofFile, verifyTimestamp } from "./src/demo";
 
 // Tasks
 // =====
@@ -135,7 +134,8 @@ task("verifyproof", "verify the merkleproof for a file on chain")
 
     try {
       const resultingHash = await traverseProofFile(proofFile, filePath)
-      const has = await verifyTimestamp(resultingHash, ethers)
+      const hash = ethers.utils.base64.decode(resultingHash)
+      const has = await verifyTimestamp(hash, ethers)
 
       if (has) {
         console.log('proof is valid, congrat')
