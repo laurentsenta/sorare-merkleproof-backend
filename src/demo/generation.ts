@@ -2,7 +2,7 @@ import { lpad } from "../gazebo/utils";
 import faker from 'faker';
 import { existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from "fs";
 import slugify from 'slugify';
-import { computeContentHash, makeMerkleBinaryTree, makeProof, MerkleBinaryTree, PathInput, traverseProof } from "../merkle";
+import { computeContentHash, createMerkleTree, makeProof, MerkleBinaryTree, PathInput, traverseProof } from "../merkle";
 
 export const generateRandomFiles = (folder: string, count: number) => {
     // @ts-ignore
@@ -63,7 +63,7 @@ export const generateMerkleTreeFromFolder = (folder: string) => {
     files.sort()
 
     const items = files.map(path => ({ path }))
-    return makeMerkleBinaryTree(items)
+    return createMerkleTree(items)
 }
 
 export const generateMerkleProofForFile = (merkleFile: string, fileName: string) => {

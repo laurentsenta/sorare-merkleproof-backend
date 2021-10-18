@@ -1,5 +1,53 @@
 # Merkle Proof: Backend
 
+## Sorare Team
+
+Team,
+this is a project I built a few weeks ago to build my portfolio,
+
+- Test-suite for the exercise in [`src/merkle/sorare.test.ts`](src/merkle/sorare.test.ts),
+- Implementation: [`src/merkle/tree.ts`](src/merkle/tree.ts)
+
+- Live version with a webapp: [blockchain-proof.singulargarden.com](https://blockchain-proof.singulargarden.com/)
+- Related article on my site: [Using MerkleTree for Blockchainized Document Certification](https://laurentsenta.com/articles/blockchain-merkle-tree-algorithm/)
+
+Run the tests: `yarn test sorare`
+
+### Additional Questions:
+
+> 1. Using the illustration above, let’s imagine I know the whole Merkle tree. Someone
+> gives me the L2 data block but I don’t trust them. How can I check if L2 data is valid?
+
+Knowing the whole tree, you can hash L2, then search for this hash in the list of leaves of your tree.
+
+> 2. I know only the L3 data block and the Merkle root. What minimum information do I
+> need to check that the L3 data block and the Merkle root belong to the same Merkle
+> tree?
+
+You need the list of all siblings hashes for the path from the root to L3,
+it's called a merkle proof.
+
+In blue in this image:
+
+![image](https://laurentsenta.com/medias/merkletree/merkletree-3.png)
+
+Note that you also need a deterministic way to order two hashes to compute their parent's node.
+
+> 3. What are some Merkle tree use cases?
+
+git and cryptocurrencies (ethereum, and bitcoin) use merkle trees. IPFS and other fancy decentralized storage system too.
+
+Generally, this structure is relevant when you need to: 
+
+- Validate large datasets efficiently,
+- Keep the ability to access (verify and mutate) a small part of your dataset efficiently.
+
+---
+
+## Instructions
+
+`yarn test` to run the tests.
+
 `make compile` to compile solidity & generate typescripts interfaces.
 
 `make node` to start a localhost node.

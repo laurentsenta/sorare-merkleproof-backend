@@ -1,13 +1,21 @@
-import { chunk, isEqual, reverse } from 'lodash'
-import { computeContentHash, computeHash, computeNodeHash } from './content'
+import { chunk } from 'lodash'
+import { computeContentHash, computeHash } from './content'
 import { isLeaf, MerkleBinaryLeaf, MerkleBinaryTree, MerkleItem, SupportedInput } from './types'
 
-export const makeMerkleBinaryTree = async <T extends SupportedInput>(items: T[]): Promise<MerkleBinaryTree<T> | null> => {
+/**
+ * Compute a merkle binary tree.
+ * 
+ * @param items list of strings or path to files, assumes the order provided is relevant.
+ * @returns The root of the Merkle Binary Tree produced.
+ */
+export const createMerkleTree = async <T extends SupportedInput>(items: T[]): Promise<MerkleBinaryTree<T> | null> => {
     if (items.length === 0) {
         return null
     }
 
-    // "correct" implementation
+    // ## "correct" implementation:
+    // This version will break with lots of files because we load everything in parallel.
+    // We would need to add streaming, batching, etc. to make this efficient and scalabe.
     // const leaves: MerkleBinaryLeaf<T>[] = await Promise.all(
     //     items.map(async item => ({
     //         hash: await computeContentHash(item),
@@ -15,9 +23,9 @@ export const makeMerkleBinaryTree = async <T extends SupportedInput>(items: T[])
     //     }))
     // )
 
-    // "incorrect" implementation,
+    // ## "incorrect" implementation,
     // this version will scale to hundred of thousands of items,
-    // it's very unefficient but you know what they say about early optimization.
+    // it's unefficient but you know what they say about "early optimization".
     const leaves: MerkleBinaryLeaf<T>[] = []
     for (let i = 0; i < items.length; i++) {
         const item = items[i]
@@ -27,6 +35,7 @@ export const makeMerkleBinaryTree = async <T extends SupportedInput>(items: T[])
         })
     }
 
+    // Now that we have the leaves compute every level until we reach the root.
     let currentLevel: MerkleItem<T>[] = leaves
 
     do {
@@ -46,93 +55,58 @@ export const makeMerkleBinaryTree = async <T extends SupportedInput>(items: T[])
     return currentLevel[0] as MerkleBinaryTree<T>
 }
 
-export const findPath = <T extends SupportedInput>(tree: MerkleBinaryTree<T>, searched: T): (MerkleItem<T>[] | null) => {
-    const recFind = <T extends SupportedInput>(item: MerkleItem<T>): (MerkleItem<T>[] | null) => {
-        if (isLeaf(item)) {
-            if (isEqual(item.content, searched)) {
-                return [item]
-            }
-            return null
-        } else {
-            if (item.left) {
-                const r = recFind(item.left)
-                if (!!r) {
-                    return [item, ...r]
-                }
-            }
-            if (item.right) {
-                const r = recFind(item.right)
-                if (!!r) {
-                    return [item, ...r]
-                }
-            }
-        }
-        return null
+export const root = <T extends SupportedInput>(tree: MerkleBinaryTree<T> | null): string => {
+    if (!tree) {
+        throw new Error('the tree is empty.')
     }
 
-    return recFind(tree)
+    return tree.hash
 }
 
-/**
- * Similar to a search but returns the list of all nodes used in the proof (from root to leaf).
- * 
- * @param tree 
- * @param searched 
- * @returns 
- */
-export const makeProof = <T extends SupportedInput>(tree: MerkleBinaryTree<T>, searched: T): (string[] | null) => {
-    const recFind = <T extends SupportedInput>(item: MerkleItem<T>): (string[] | null) => {
-        if (isLeaf(item)) {
-            if (isEqual(item.content, searched)) {
-                return []
-            }
-            return null
-        } else {
-            if (item.left) {
-                const r = recFind(item.left)
-                if (!!r) {
-                    return [item.right?.hash || '', ...r]
-                }
-            }
-            if (item.right) {
-                const r = recFind(item.right)
-                if (!!r) {
-                    return [item.left.hash, ...r]
-                }
-            }
-        }
-        return null
+export const height = (tree: MerkleBinaryTree<any> | null): number => {
+    if (!tree) {
+        return 0
     }
 
-    return recFind(tree)
-}
+    let t: MerkleItem<any> = tree
+    let height = 0
 
-export const verifyProof = async (rootHash: string, proof: string[], itemHash: string): Promise<boolean> => {
-    return (await traverseProof(proof, itemHash)) === rootHash
-}
-
-/**
- * The proof is the list of "unknown hashes" to go from the root to the item / leaf.
- * 
- * We start from the bottom, hash the "known" item with the item from the proof,
- * and go up, level by level until we reached the root.
- * 
- * TODO: deal with the risk of validating fake proofs with the wrong depth.
- * 
- * @param tree 
- * @param proof 
- * @param itemHash 
- * @returns whether the proof is valid or not.
- */
-export const traverseProof = async (proof: string[], itemHash: string): Promise<string> => {
-    let items = reverse(proof)
-    let currentHash = itemHash
-
-    while (items.length > 0) {
-        const [first, ...rest] = items
-        currentHash = await computeNodeHash(first, currentHash)
-        items = rest
+    while (!!t && !isLeaf(t)) {
+        height += 1;
+        t = t.left
     }
 
-    return currentHash
+    return height + 1
+}
+
+
+export const level = <T extends SupportedInput>(tree: MerkleBinaryTree<T> | null, index: number): string[] => {
+    if (!tree) {
+        throw new Error('the tree is empty.')
+    }
+
+    let currentIndex = index;
+    let currentLevel: MerkleItem<T>[] = [tree]
+
+    while (currentIndex > 0) {
+        const nextLevel = currentLevel
+            .flatMap(x => {
+                if (isLeaf(x)) {
+                    throw new Error('the tree is not deep enough')
+                }
+
+                return [x.left, x.right]
+            })
+            .filter(isNotNull)
+
+        currentLevel = nextLevel
+        currentIndex -= 1
+    }
+
+    return currentLevel.map(x => x.hash)
+}
+
+
+const isNotNull = <T>(t: T | null): t is T => {
+    return t !== null
 }

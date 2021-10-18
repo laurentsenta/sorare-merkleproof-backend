@@ -1,11 +1,11 @@
 // @ts-nocheck
-import { computeContentHash, findPath, makeMerkleBinaryTree, makeProof, verifyProof } from '.'
+import { computeContentHash, findPath, createMerkleTree, makeProof, verifyProof } from '.'
 
 describe('I can create a binary tree', () => {
     it('creates an empty tree', async () => {
         const leaves: string[] = []
 
-        const tree = await makeMerkleBinaryTree(leaves)
+        const tree = await createMerkleTree(leaves)
 
         expect(tree).toBeNull()
     })
@@ -13,7 +13,7 @@ describe('I can create a binary tree', () => {
     it('creates a tree with one item', async () => {
         const leaves = ['item1']
 
-        const tree = await makeMerkleBinaryTree(leaves)
+        const tree = await createMerkleTree(leaves)
 
         expect(tree.hash).toBeTruthy()
         expect(tree.left.hash).toBeTruthy()
@@ -38,7 +38,7 @@ describe('I can create a binary tree', () => {
     it('creates a tree with two items (1 level)', async () => {
         const leaves = ['item1', 'item2-a']
 
-        const tree = await makeMerkleBinaryTree(leaves)
+        const tree = await createMerkleTree(leaves)
 
         expect(tree.hash).toBeTruthy()
         expect(tree.left.hash).toBeTruthy()
@@ -50,7 +50,7 @@ describe('I can create a binary tree', () => {
     it('creates a tree with three items (2 levels)', async () => {
         const leaves = ['item1', 'item2-a', 'item3-a']
 
-        const tree = await makeMerkleBinaryTree(leaves)
+        const tree = await createMerkleTree(leaves)
 
         expect(tree.hash).toBeTruthy()
         expect(tree.left.hash).toBeTruthy()
@@ -67,7 +67,7 @@ describe('I can search a binary tree', () => {
     it('returns null on missing items', async () => {
         const leaves = ['item1', 'item2-a', 'item3-a']
 
-        const tree = await makeMerkleBinaryTree(leaves)
+        const tree = await createMerkleTree(leaves)
 
         const p = findPath(tree, 'item0')
         expect(p).toBeNull()
@@ -76,7 +76,7 @@ describe('I can search a binary tree', () => {
     it('returns something on existing items', async () => {
         const leaves = ['item1', 'item2-a', 'item3-a']
 
-        const tree = await makeMerkleBinaryTree(leaves)
+        const tree = await createMerkleTree(leaves)
 
         const p = findPath(tree, 'item2-a')
         expect(p).toBeTruthy()
@@ -85,7 +85,7 @@ describe('I can search a binary tree', () => {
     it('returns the path on existing items', async () => {
         const leaves = ['item1', 'item2-a', 'item3-a']
 
-        const tree = await makeMerkleBinaryTree(leaves)
+        const tree = await createMerkleTree(leaves)
 
 
         const p = findPath(tree, 'item2-a')
@@ -101,7 +101,7 @@ describe('I can produce a proof and verify it', () => {
     it('returns null on missing items', async () => {
         const leaves = ['item1', 'item2-a', 'item3-a']
 
-        const tree = await makeMerkleBinaryTree(leaves)
+        const tree = await createMerkleTree(leaves)
 
         const p = makeProof(tree, 'item0')
         expect(p).toBeNull()
@@ -110,7 +110,7 @@ describe('I can produce a proof and verify it', () => {
     it('returns something on existing items', async () => {
         const leaves = ['item1', 'item2-a', 'item3-a']
 
-        const tree = await makeMerkleBinaryTree(leaves)
+        const tree = await createMerkleTree(leaves)
 
         const p = makeProof(tree, 'item2-a')
         expect(p).toBeTruthy()
@@ -119,7 +119,7 @@ describe('I can produce a proof and verify it', () => {
     it('returns the path on existing items', async () => {
         const leaves = ['item1', 'item2-a', 'item3-a']
 
-        const tree = await makeMerkleBinaryTree(leaves)
+        const tree = await createMerkleTree(leaves)
 
         const p = makeProof(tree, 'item2-a')
 
@@ -131,7 +131,7 @@ describe('I can produce a proof and verify it', () => {
     it('validates a proof', async () => {
         const leaves = ['item1', 'item2-a', 'item3-a']
 
-        const tree = await makeMerkleBinaryTree(leaves)
+        const tree = await createMerkleTree(leaves)
         const p = makeProof(tree, 'item2-a')
         const itemHash = await computeContentHash('item2-a')
 
@@ -142,7 +142,7 @@ describe('I can produce a proof and verify it', () => {
     it('invalidates a wrong proof', async () => {
         const leaves = ['item1', 'item2-a', 'item3-a']
 
-        const tree = await makeMerkleBinaryTree(leaves)
+        const tree = await createMerkleTree(leaves)
         const p = makeProof(tree, 'item2-a')
         const itemHash = await computeContentHash('item2-tampered')
 

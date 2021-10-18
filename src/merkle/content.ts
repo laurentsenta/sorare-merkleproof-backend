@@ -22,6 +22,9 @@ export const computeHash = async <T extends SupportedInput>(left: MerkleItem<T>,
 
 export const computeNodeHash = async (a: string, b: string | undefined): Promise<string> => {
     let [left, right] = [a, b]
+
+    // Note the ordering is important here:
+    // It has to be the same at construction time AND at proof verification time.
     if (b && a > b) {
         [left, right] = [b, a]
     }
